@@ -47,10 +47,11 @@ public class TelegramService {
         }
     }
 
-    public void enviarFotoComDescricao(String urlImagem, String titulo, String preco, String descricao, String link) {
+    public void enviarFotoComDescricao(String urlImagem, String titulo, String preco, String precoPromo, String descricao, String link) {
         try {
             String caption = "🔥 <b>" + titulo + "</b>\n\n" +
-                             "💰 <b>" + preco + "</b>\n" +
+                             "💰 <s>" + preco + "</s>\n" +
+                             "💥 <b>" + precoPromo + "</b>\n" +
                              "📝 " + descricao;
 
             // Botão inline de compra
@@ -79,7 +80,8 @@ public class TelegramService {
             // Fallback: manda como texto simples com botão
             try {
                 String texto = "🔥 <b>" + titulo + "</b>\n\n" +
-                               "💰 <b>" + preco + "</b>\n" +
+                               "💰 <s>" + preco + "</s>\n" +
+                               "💥 <b>" + precoPromo + "</b>\n" +
                                "📝 " + descricao;
 
                 Map<String, String> botao = new HashMap<>();

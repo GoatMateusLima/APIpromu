@@ -11,6 +11,7 @@
 - **Amazon Associates** - Sistema de afiliados com ID `promubr-20`
 - **Scheduler Automático** - Delete de promoções expiradas a cada hora
 - **Porta Configurável** - Docker em 8085, local em 8080
+- **Nova Coluna precoPromo** - Adicionado campo para valor promocional do produto
 
 ### 🔧 Tecnologias
 | Componente | Versão |
@@ -71,6 +72,7 @@ curl -X POST http://localhost:8085/manual \
   -d '{
     "titulo": "Apple iPhone 16 (256GB) Preto",
     "preco": "R$ 3.999,00",
+    "precoPromo": "R$ 2.999,00",
     "link": "https://www.amazon.com.br/dp/B08N5WRWNW",
     "imagem": "https://m.media-amazon.com/images/I/...",
     "descricaoOriginal": "iPhone 16 com chip A18, câmera 48MP, bateria 22 horas...",
@@ -84,6 +86,7 @@ curl -X POST http://localhost:8085/manual \
   "id": 1,
   "titulo": "Apple iPhone 16 (256GB) Preto",
   "preco": "R$ 3.999,00",
+  "precoPromo": "R$ 2.999,00",
   "link": "https://www.amazon.com.br/dp/B08N5WRWNW?tag=promubr-20",
   "imagem": "https://m.media-amazon.com/images/I/...",
   "descricaoOriginal": "...",
@@ -388,6 +391,69 @@ TELEGRAM_CHAT_ID=
 - [ ] Histórico de erros/tentativas de envio
 - [ ] Cache de descrições geradas (economizar Groq)
 
+## 🆕 O Que Foi Criado e Acrescentado
+
+### Nova Coluna `precoPromo`
+- **Adicionado em**: `Promocao.java` (entidade) e `PromocaoRequest.java` (DTO)
+- **Propósito**: Separar valor primário (`preco`) do valor promocional (`precoPromo`)
+- **Mapeamento**: `@Column(name = "precoPromo")` para coluna no banco
+- **Uso**: Ao cadastrar via `POST /manual`, ambos os campos são salvos
+- **Exemplo**: `preco: "R$ 3.999,00"` (valor original), `precoPromo: "R$ 2.999,00"` (promoção)
+
+### Correção de Mapeamento de Colunas
+- **Problema inicial**: Campo `preco` mapeado para coluna `"precoInt"` (incorreto)
+- **Correção**: Alterado para `@Column(name = "preco")` para coluna `"preco"`
+- **Impacto**: Hibernate atualiza o esquema automaticamente com `ddl-auto: update`
+
+### Controllers e Endpoints
+- **ManualController**: `POST /manual` para cadastrar promoções
+- **EnviarController**: `POST /enviar` (último produto) e `POST /enviar/todos` (todos ativos)
+- **BancoController**: `GET /banco` (listar todas) e `DELETE /banco/{id}` (deletar por ID)
+- **EnviarSiteController**: `GET /enviarsite` (listar ativas para site)
+- **TesteController**: `GET /teste/telegram` (teste de conexão Telegram)
+
+### Services
+- **PromocaoService**: Salvar, buscar ativas/todas, deletar
+- **TelegramService**: Enviar foto + caption para Telegram
+- **GroqService**: Reescrever descrições com IA
+
+### Repository
+- **PromocaoRepository**: Extends `JpaRepository`, com queries `@Query` para ativas e delete por expiração
+
+### Scheduler
+- **PromocaoScheduler**: `@Scheduled` para deletar promoções expiradas a cada hora
+
+### Configuração Docker
+- **Dockerfile**: Build com Maven 3.9.6 + Java 21
+- **docker-compose.yml**: PostgreSQL 16 + API, com healthcheck e volumes
+
+## 🚨 Problemas Enfrentados e Soluções
+
+### 1. Erro 404 em `/telegram/enviar`
+- **Problema**: Rota não existe; código tem `POST /enviar` sem prefixo `/telegram`
+- **Solução**: Usar `POST /enviar` em vez de `/telegram/enviar`
+- **Impacto**: Endpoint funciona corretamente para envio ao Telegram
+
+### 2. Mapeamento Incorreto de Colunas no Banco
+- **Problema**: Campo `preco` mapeado para `"precoInt"` em vez de `"preco"`
+- **Solução**: Corrigido para `@Column(name = "preco")` em `Promocao.java`
+- **Impacto**: Colunas `preco` e `precoPromo` agora corretas no PostgreSQL
+
+### 3. Possíveis Erros no Docker
+- **Problema**: Build falha se variáveis de ambiente não estiverem definidas
+- **Solução**: Garantir que `.env` existe com `POSTGRES_PASSWORD`, `GROQ_API_KEY`, `TELEGRAM_BOT_TOKEN`, `TELEGRAM_CHAT_ID`
+- **Verificação**: Rodar `docker compose up --build` e checar logs com `docker compose logs api`
+
+### 4. Lombok Removido
+- **Problema**: Dependência Lombok causava conflitos de build
+- **Solução**: Removido Lombok; implementados getters/setters manuais em todas as classes
+- **Impacto**: Build estável sem dependências externas desnecessárias
+
+### 5. Expiração de Promoções
+- **Problema**: Promoções acumulavam no banco sem limpeza
+- **Solução**: Scheduler automático para deletar expiradas a cada hora
+- **Impacto**: Banco limpo automaticamente, evitando crescimento desnecessário
+
 ## 📞 Suporte
 
 Qualquer dúvida, procure pelos logs:
@@ -395,6 +461,7 @@ Qualquer dúvida, procure pelos logs:
 ✓ = sucesso
 ❌ = erro
 ⚠️ = aviso
+```
 📡 = operação
 📸 = imagem
 ```

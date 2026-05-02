@@ -7,7 +7,6 @@ MVP de recomendação de promoções da Amazon com envio automático para Telegr
 O usuário cadastra promoções manualmente (com link de associado, preço, imagem e descrição), a IA (Groq) reescreve a descrição de forma atrativa, e o sistema envia para o Telegram e expõe os dados para o site. Cada promoção expira automaticamente após 24h.
 
 ---
-
 ## Stack
 
 | Camada | Tecnologia |

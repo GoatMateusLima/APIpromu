@@ -3,10 +3,19 @@ package com.promos.app.dto;
 public class PromocaoRequest {
     private String titulo;
     private String preco;
+    private String precoPromo;
     private String link; // pode ser link original ou já com afiliado
     private String imagem;
     private String descricaoOriginal;
     private boolean adicionarAfiliado; // se true, adiciona ID de afiliado ao link
+
+    public String getPrecoPromo(){
+        return precoPromo;
+    }
+
+    public void setPrecoPromo(String precoPromo){
+        this.precoPromo = precoPromo;
+    }
 
     public String getTitulo() {
         return titulo;

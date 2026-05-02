@@ -12,7 +12,12 @@ public class Promocao {
     private Long id;
 
     private String titulo;
+
+    @Column(name = "preco", columnDefinition = "TEXT")
     private String preco;
+    
+    @Column(name = "precoPromo", columnDefinition = "TEXT")
+    private String precoPromo;
 
     @Column(columnDefinition = "TEXT")
     private String link;
@@ -54,6 +59,14 @@ public class Promocao {
 
     public void setPreco(String preco) {
         this.preco = preco;
+    }
+
+    public String getPrecoPromo() {
+        return precoPromo;
+    }
+
+    public void setPrecoPromo(String precoPromo) {
+        this.precoPromo = precoPromo;
     }
 
     public String getLink() {

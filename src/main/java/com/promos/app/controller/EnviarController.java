@@ -38,6 +38,7 @@ public class EnviarController {
         System.out.println("🆔 ID:     " + ultimo.getId());
         System.out.println("🎯 Título: " + ultimo.getTitulo());
         System.out.println("💰 Preço:  " + ultimo.getPreco());
+        System.out.println("💥 Preço Promocional: " + ultimo.getPrecoPromo());
         System.out.println("🖼️  Imagem: " + ultimo.getImagem());
         System.out.println("🔗 Link:   " + ultimo.getLink());
         System.out.println("═══════════════════════════════════\n");
@@ -46,6 +47,7 @@ public class EnviarController {
                 ultimo.getImagem(),
                 ultimo.getTitulo(),
                 ultimo.getPreco(),
+                ultimo.getPrecoPromo(),
                 ultimo.getDescricaoGerada(),
                 ultimo.getLink()
         );
@@ -73,6 +75,7 @@ public class EnviarController {
                     p.getImagem(),
                     p.getTitulo(),
                     p.getPreco(),
+                    p.getPrecoPromo(),
                     p.getDescricaoGerada(),
                     p.getLink()
             );

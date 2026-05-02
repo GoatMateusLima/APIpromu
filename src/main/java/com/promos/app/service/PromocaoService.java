@@ -25,6 +25,7 @@ public class PromocaoService {
         Promocao promocao = new Promocao();
         promocao.setTitulo(request.getTitulo());
         promocao.setPreco(request.getPreco());
+        promocao.setPrecoPromo(request.getPrecoPromo());
         promocao.setImagem(request.getImagem());
         promocao.setDescricaoOriginal(request.getDescricaoOriginal());
 
