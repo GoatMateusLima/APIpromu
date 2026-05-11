@@ -67,7 +67,7 @@ Cadastra um novo produto com reescrita automática via Groq.
 
 **Request:**
 ```bash
-curl -X POST http://localhost:8085/manual \
+curl -X POST https://apipromu-production.up.railway.app/manual \
   -H 'Content-Type: application/json' \
   -d '{
     "titulo": "Apple iPhone 16 (256GB) Preto",
@@ -79,6 +79,12 @@ curl -X POST http://localhost:8085/manual \
     "adicionarAfiliado": true
   }'
 ```
+
+
+
+
+
+
 
 **Response:**
 ```json
